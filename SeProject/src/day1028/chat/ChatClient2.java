@@ -22,15 +22,17 @@ public class ChatClient2 extends JFrame implements KeyListener, ActionListener {
 	JTextField t_input;
 	JButton bt;
 	ChatClient c;
+	ChatClient3 c3;
 
 	public ChatClient2(ChatClient c) {
-		super("친구");
+		super("친구2");
 		area = new JTextArea();
 		scroll = new JScrollPane(area);
 		p_south = new JPanel();
 		t_input = new JTextField(15);
 		bt = new JButton("send");
 		this.c = c;
+		c3 = new ChatClient3(c, this);
 
 		// 패널 조립
 		p_south.add(t_input);
@@ -82,6 +84,7 @@ public class ChatClient2 extends JFrame implements KeyListener, ActionListener {
 
 		// 친구 필드
 		c.area.append(super.getTitle() + ": " + msg + "\n");
+		c3.area.append(super.getTitle() + ": " + msg + "\n");
 	}
 	
 	@Override
@@ -94,9 +97,4 @@ public class ChatClient2 extends JFrame implements KeyListener, ActionListener {
 	public void keyTyped(KeyEvent e) {
 
 	}
-
-	public static void main(String[] args) {
-		// new ChatClient2();
-	}
-
 }
