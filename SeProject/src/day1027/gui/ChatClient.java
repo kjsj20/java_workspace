@@ -45,7 +45,7 @@ public class ChatClient extends JFrame implements KeyListener{
 		
 		
 		//보여주기 전에 미리 연결해 놓자 (컴포넌트와 리스너 연결)
-		bt.addActionListener(new MyActionListener());
+		bt.addActionListener(new MyActionListener(t_input,  area));
 		t_input.addKeyListener(this); //프레임이 곧 리스너다!!
 		setSize(300,400);
 		setVisible(true);
