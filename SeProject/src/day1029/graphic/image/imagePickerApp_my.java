@@ -1,8 +1,9 @@
 package day1029.graphic.image;
 
 import java.awt.BorderLayout;
-import java.awt.Canvas;
 import java.awt.Color;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -17,16 +18,16 @@ public class imagePickerApp_my extends JFrame{
 		j_center.setBackground(Color.CYAN);
 		JPanel j_north = new JPanel();
 		
-		add(j_north, BorderLayout.NORTH);
 		add(j_center);
 		
 		for(int i=0; i<thumb.length; i++) {
-			thumb[i] = new ThumbCanvas_my(src[i]);
+			thumb[i] = new ThumbCanvas_my(src[i], this.j_center);
 			j_north.add(thumb[i]);
-			thumb[i].repaint();
 		}
 		
-		setSize(700,500);
+		add(j_north, BorderLayout.NORTH);
+		
+		setSize(770,500);
 		setVisible(true);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
