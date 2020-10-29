@@ -9,7 +9,6 @@ import javax.swing.JLabel;
 
 public class MyimgCanvas extends Canvas{
 	Toolkit kit; 
-	ImageGallApp iga; 
 	String dir = "D:/java_workspace/SeProject/res/travel2/";
 	String[] src = {"aa.jpg", "ab.jpg", "ax.jpg", "bm.jpg", "et.jpg", "kg.jpg", "mx.jpg"};
 	Image[] img = new Image[src.length];
@@ -20,7 +19,7 @@ public class MyimgCanvas extends Canvas{
 		kit = Toolkit.getDefaultToolkit();
 		for(int i=0; i<img.length; i++) {
 			img[i] = kit.getImage(dir + src[i]);
-			img[i] = img[i].getScaledInstance(600, 700, Image.SCALE_SMOOTH);
+			img[i] = img[i].getScaledInstance(700, 800, Image.SCALE_SMOOTH);
 		}
 	}
 	
