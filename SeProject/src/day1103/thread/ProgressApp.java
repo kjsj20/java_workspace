@@ -15,48 +15,40 @@ import javax.swing.SwingConstants;
 
 public class ProgressApp extends JFrame{
 	JLabel la;
-	JProgressBar bar;
-	Thread laThread,barThread; //바를 증가시킬 쓰레드
-	int n = 0;
+	JProgressBar bar1, bar2, bar3;
+	Thread t1,t2,t3; //바를 증가시킬 쓰레드
 	
 	public ProgressApp() {
 		la = new JLabel("0", SwingConstants.CENTER);	
-		bar = new JProgressBar();
-		barThread = new Thread() {
-			public void run() {
-				while(true) {
-					n++;
-					setBarValue();
-					try {
-						Thread.sleep(50);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		};
+		bar1 = new JProgressBar();
+		bar2 = new JProgressBar();
+		bar3 = new JProgressBar();
+		t1 = new BarThread(bar1, 500);
+		t2 = new BarThread(bar2, 250);
+		t3 = new BarThread(bar3, 50);
 		
 		//스타일
 		la.setPreferredSize(new Dimension(500, 150));
 		la.setFont(new Font("Verdana", Font.BOLD|Font.ITALIC, 90));
-		bar.setPreferredSize(new Dimension(500,70));
+		bar1.setPreferredSize(new Dimension(500,70));
+		bar2.setPreferredSize(new Dimension(500,70));
+		bar3.setPreferredSize(new Dimension(500,70));
+		
 		setLayout(new FlowLayout());
 		add(la);
-		add(bar);
+		add(bar1);
+		add(bar2);
+		add(bar3);
 		
-		setSize(600, 300);
+		setSize(600, 500);
 		setVisible(true);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
-		barThread.start();
+		t1.start();
+		t2.start();
+		t3.start();
 	}
-	
-	//바의 값 제어
-	public void setBarValue() {
-		bar.setValue(n);
-		la.setText(Integer.toString(n));
-	}
-	
+
 	public static void main(String[] args) {
 		new ProgressApp();
 	}
