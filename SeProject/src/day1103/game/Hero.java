@@ -3,14 +3,16 @@
  * */
 package day1103.game;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
 
+import javax.swing.JOptionPane;
+
 public class Hero extends gameObject{
-	
-	public Hero(Image img,int x, int y, int width, int height, int velX, int velY) {
+	GamePanel gamePanel; //enemyList가 있는 클래스라서
+	public Hero(GamePanel gamePanel,Image img,int x, int y, int width, int height, int velX, int velY) {
 		super(img, x,y,width,height,velX,velY);
+		this.gamePanel = gamePanel;
 	}
 	
 	public void tick() {
@@ -19,7 +21,32 @@ public class Hero extends gameObject{
 		
 		rect.x=x;
 		rect.y=y;
+		
+		collisionCheck();
 	}
+	
+	public void collisionCheck() {
+		//적군과 나의 충돌여부를 판단하고, 만일 충돌하면 나죽고 너죽고, HP죽이고..
+		for(int i=0; i<gamePanel.enemyList.size(); i++) {
+			Enemy enemy = gamePanel.enemyList.get(i);
+			if(this.rect.intersects(enemy.rect)) { //충돌..
+				gamePanel.hp.remove(gamePanel.hp.size() - 1);
+				gamePanel.enemyList.remove(enemy);
+				
+				gamePanel.score += 20;
+				
+				if(gamePanel.hp.size() == 0) {
+					gamePanel.over = true;
+					gamePanel.flag = false;
+//					JOptionPane.showMessageDialog(gamePanel, "Game Over....");
+//					System.exit(0);
+				}
+				System.out.println(gamePanel.hp.size());
+				break;
+			}
+		}
+	}
+	
 	
 	//그래픽 처리(화면 그려질 처리)
 	//모든 게임 캐릭터는 패널에 그려야 하므로, g2를 패널의 paint() 메서드
