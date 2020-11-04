@@ -2,11 +2,16 @@ package day1103.game;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 
 import javax.swing.JPanel;
+
+import common.image.ImageUtil;
 
 //사실상 모든~게임의 그래픽처리는  패널이 담당하게 됨!!
 public class GamePanel extends JPanel{
@@ -16,11 +21,17 @@ public class GamePanel extends JPanel{
 	
 	Hero hero;
 	Bullet bullet;
+	ArrayList<Bullet> bulletList = new ArrayList<Bullet>();
+	ArrayList<Enemy> enemyList = new ArrayList<Enemy>();
+	ArrayList<Block> blockList = new ArrayList<Block>();
+	Image bgImg;
 	
 	public GamePanel() {
 		this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
-		
+		createBg();
+		createBlock();
 		createHero();//주인공 생성
+		createEnemy();
 		
 		loopThread = new Thread() {
 			public void run() {
@@ -47,16 +58,17 @@ public class GamePanel extends JPanel{
 	}
 	
 	public void createHero() {
-		hero = new Hero(200, 200, 50, 50, 0, 0);
+		Image img = ImageUtil.getIcon(this.getClass(), "res/game/plane.png", 100, 65).getImage();
+		hero = new Hero(img,200, 200, 100, 65, 0, 0);
 	}
 	
 	//게임 윈도우로부터 어떤 방향키가 눌렸는지를 전달받자!!
 	public void moveKey(int key) {
 		switch(key) {
-			case KeyEvent.VK_LEFT:hero.velX=-2;break;
-			case KeyEvent.VK_RIGHT:hero.velX=2;break;
-			case KeyEvent.VK_UP:hero.velY=-2;break;
-			case KeyEvent.VK_DOWN:hero.velY=2;break;
+			case KeyEvent.VK_LEFT:hero.velX=-5;break;
+			case KeyEvent.VK_RIGHT:hero.velX=5;break;
+			case KeyEvent.VK_UP:hero.velY=-5;break;
+			case KeyEvent.VK_DOWN:hero.velY=5;break;
 			case KeyEvent.VK_SPACE:fire();break;
 		}
 	}
@@ -70,18 +82,92 @@ public class GamePanel extends JPanel{
 		}
 	}
 	
+	// 1)플랫폼에 종속된 경로 : Toolkit
+	// 2)클래스패스 : 클래스로더.getResources()
+	
 	public void fire() {
-		bullet = new Bullet(hero.x, hero.y, 50, 50, 10, 10); 
+		Image img = ImageUtil.getIcon(this.getClass(), "res/game/ball.png", 20, 20).getImage();
+		Bullet bullet = new Bullet(this,img,hero.x + (hero.width), hero.y + (hero.height/2), 20, 20, 10, 10); 
+		bulletList.add(bullet);//생성된 총알을 bulletList에 담자
+	}
+	
+	//배경이미지 생성
+	public void createBg() {
+		bgImg = ImageUtil.getIcon(this.getClass(), "res/game/bg.jpg", WIDTH, HEIGHT).getImage();
+	}
+	
+	//적군 생성
+	public void createEnemy() {
+		String[] path = {"e1.png", "e2.png", "e3.png", "e4.png" , "e5.png"};
+		for(int i=0; i<path.length; i++) {
+			System.out.println("res/game/" + path[i]);
+			Image img = ImageUtil.getIcon(this.getClass(), "res/game/"+path[i], 80, 60).getImage();			
+			Enemy enemy = new Enemy(img, WIDTH-50, 50 + (100 * i), 80, 60, -1, 0);
+			enemyList.add(enemy); //적군 목록에 추가!!
+		}
+	}
+	
+	//블락 생성
+	public void createBlock() {
+		for(int i=0; i<20; i++) {
+			Image img = ImageUtil.getIcon(this.getClass(), "res/game/block.png", 80, 60).getImage();			
+			Block block = new Block(img, 300 + (i *60), 600, 60, 60, 0, 0);
+			blockList.add(block); //적군 목록에 추가!!
+		}
+	}
+	
+	//게임의 상황, 정보 출력
+	public void printData(Graphics2D g2) {
+		g2.setFont(new Font("Arial Black", Font.BOLD, 25));
+		
+		StringBuffer sb = new StringBuffer(); 
+		sb.append("Bullet: " + bulletList.size()); 
+		sb.append("  Enemy: " + enemyList.size());
+		
+		
+		g2.drawString(sb.toString(), 100, 50);
 	}
 	
 	//물리량 변경
 	public void tick() {
 		hero.tick();
-		if(bullet!=null)bullet.tick();
+		 
+		for(int i=0; i<bulletList.size(); i++) {
+			Bullet bullet = bulletList.get(i);
+			bullet.tick();			
+		}
+		
+		for(int i=0; i<enemyList.size(); i++) {
+			Enemy enemy = enemyList.get(i);
+			enemy.tick();
+		}
+		
+		for(int i=0; i<blockList.size(); i++) {
+			Block block = blockList.get(i);
+			block.tick();
+		}
 	}
 	public void render(Graphics2D g2) {
+		g2.drawImage(bgImg, 0, 0, this);
+		
 		hero.render(g2);
-		if(bullet!=null)bullet.render(g2);
+		
+		for(int i=0; i<bulletList.size(); i++) {
+			Bullet bullet = bulletList.get(i);
+			bullet.render(g2);			
+		}
+		
+		printData(g2);
+		
+		for(int i=0; i<enemyList.size(); i++) {
+			Enemy enemy = enemyList.get(i);
+			enemy.render(g2);
+		}
+		
+		for(int i=0; i<blockList.size(); i++) {
+			Block block = blockList.get(i);
+			block.render(g2);
+		}
 	}
 	
 	//모든 게임의  tick(), render() 를 호출! 즉 게임엔진!!
