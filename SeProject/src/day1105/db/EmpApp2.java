@@ -1,0 +1,148 @@
+package day1105.db;
+
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+
+public class EmpApp2 extends JFrame {
+	JButton bt_connect, bt_load;
+	JTextArea area;
+	JScrollPane scroll;
+	
+	
+	String url = "jdbc:mariadb://localhost/db1105";
+	String user = "root";
+	String password = "1234";
+	
+	Connection con; //접속 후, 그 정보를 가진 객체
+	PreparedStatement pstmt;//쿼리문 수행 객체, 인터페이스이므로 new로 생성하는 것이 아니라
+	//접속객체인 Connection 객체로 부터 인스턴스를 얻어올 수 있다..
+	//why? 접속이 성공되어야 쿼리문을 수행할 수 있으므로, 접속객체에 의존적인것이 당연하다!!
+	ResultSet rs; //select 쿼리문 수행결과에 의해 표가 반환되는데, 이때 이 표를 담는 객체
+	
+	public EmpApp2() {
+		bt_connect = new JButton("Connect");
+		bt_load = new JButton("Load");
+		area = new JTextArea();
+		scroll = new JScrollPane(area);
+
+		area.setPreferredSize(new Dimension(880, 500));
+
+		setLayout(new FlowLayout());
+
+		add(bt_connect);
+		add(bt_load);
+		add(scroll);
+
+		// 버튼과 리스너 연결
+		bt_connect.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				connect();
+			}
+		});
+
+		bt_load.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				load();
+			}
+		});
+
+		setSize(1000, 600);
+		setVisible(true);
+//		setDefaultCloseOperation(EXIT_ON_CLOSE); DB를 닫지 않고, 프로세스만 종료해버리닌까~
+		this.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+				//열려있는 데이터베이스 관련 객체들을 모두 닫자 !
+				if(rs != null){
+					try {
+						rs.close();
+					} catch (SQLException e1) {
+						e1.printStackTrace();
+					}					
+				} 
+				if(pstmt !=null) {
+					try {
+						pstmt.close();
+					} catch (SQLException e1) {
+						e1.printStackTrace();
+					}
+				}
+				if(con != null) {
+					try {
+						con.close();
+					} catch (SQLException e1) {
+						e1.printStackTrace();
+					}					
+				}
+				//프로세스 종료
+				System.exit(0);
+			}
+		});
+		
+	}
+
+	public void connect() {
+		// 오라클 접속 시도하기!!(1.드라이버 로드 2.접속)
+		try {
+			Class.forName("org.mariadb.jdbc.Driver");
+			area.append("드라이버 로드 성공\n");
+			
+			//접속시도
+			con = DriverManager.getConnection(url, user, password);
+			
+			if(con==null) {
+				area.append("접속실패\n");
+			} else {
+				area.append("접속성공\n");
+			}
+			
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			area.append("드라이버 로드 실패\n");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void load() {
+		//select 문을 실행해본다!!
+		String sql = "select * from emp";
+		
+		try {
+			pstmt = con.prepareStatement(sql);
+			//pstmt.executeUpdate(); //DML(insert, update, delete)의 경우만..
+			rs = pstmt.executeQuery(sql);//select 문의 경우엔 executeQuery() 이용해야 한다.
+			area.append("EMPNO\t ENAME\t JOB\t MGR\t HIREDATE\t SAL\t COMM\t DEPTNO\t \n");
+			while(rs.next()) {
+				ResultSetMetaData rsmd = rs.getMetaData();
+				int col = rsmd.getColumnCount();
+
+				for(int i = 1; i <= col; i++) {
+					area.append(rs.getString(i) + "\t");
+				}
+				area.append("\n");
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void main(String[] args) {
+		new EmpApp2();
+	}
+}
