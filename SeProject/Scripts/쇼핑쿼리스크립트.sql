@@ -48,5 +48,17 @@ INSERT INTO SUBCATEGORY (SUBCATEGORY_ID, TOPCATEGORY_ID, NAME) values(seq_subcat
 INSERT INTO SUBCATEGORY (SUBCATEGORY_ID, TOPCATEGORY_ID, NAME) values(seq_subcategory.nextval,4,'슬리퍼');
 INSERT INTO SUBCATEGORY (SUBCATEGORY_ID, TOPCATEGORY_ID, NAME) values(seq_subcategory.nextval,4,'운동화');
 
-SELECT * FROM SUBCATEGORY ORDER BY SUBCATEGORY_ID DESC  ;
+SELECT * FROM SUBCATEGORY ORDER BY SUBCATEGORY_ID asc;
 
+CREATE TABLE product(
+	product_id NUMBER,
+	subcategory_id NUMBER,
+	product_name varchar(30),
+	brand varchar(20),
+	price NUMBER DEFAULT 0,
+	filename varchar(20),
+	PRIMARY key(product_id),
+	constraint fk_subcategory FOREIGN key(subcategory_id) REFERENCES subcategory(subcategory_id)
+);
+
+CREATE SEQUENCE seq_product INCREMENT by 1 START WITH 1;
