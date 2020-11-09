@@ -185,7 +185,10 @@ public class ShoppingApp extends JFrame {
 		};
 		bt_edit = new JButton("수정");
 		bt_del = new JButton("삭제");
-
+		
+		bt_edit.addActionListener(new myBtnEdit(this));
+		bt_del.addActionListener(new myBtnDel(this));
+		
 		ch_top2.add("choose category");
 
 		// 동쪽 조립
@@ -300,11 +303,9 @@ public class ShoppingApp extends JFrame {
 		table.addMouseListener(new MouseAdapter() {
 			public void mouseReleased(MouseEvent e) {
 				int row = table.getSelectedRow();
-
-				// 선택한 제품의 알맞는 카테고리 선택되어 있게..!!
-				setCategory(row);
+				int topid = setCategory(row);
+				getSubList(topid);
 				setSubCategory(row);
-
 				getDetail(row); // 상세보기 출력!
 			}
 		});
@@ -389,7 +390,7 @@ public class ShoppingApp extends JFrame {
 			rs = pstmt.executeQuery();
 			// 채우기전에 모두 지우기!! (초기화)
 			ch_sub.removeAll();// 모두 지우기!!
-
+			ch_sub2.removeAll();
 			ch_sub.add("choose category");
 			ch_sub2.add("choose category");
 			// 서브카테고리 채우기
@@ -511,7 +512,6 @@ public class ShoppingApp extends JFrame {
 			rs.last();// 커서를 제일 마지막으로 보내기
 			int currentRow = rs.getRow();
 			// System.out.println("현재 커서가 가리키는 레코드 번호는 "+currentRow);
-			System.out.println("마지막에 도달한 커서의 rowNum " + currentRow);
 
 			// rs의 표 데이터를 ProductController가 보유한 data이차원 배열에 대입!!
 			String[][] data = new String[currentRow][productController.column.length];
@@ -615,21 +615,22 @@ public class ShoppingApp extends JFrame {
 		can2.repaint();
 	}
 
-	public void setCategory(int row) {
+	public int setCategory(int row) {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
+		int topcategory_id = 0;
 		String subcategory_id = (String) table.getValueAt(row, 1);
 		String sql = "select * from topcategory where topcategory_id = (";
 		sql += "select topcategory_id from subcategory where subcategory_id = " + subcategory_id;
 		sql += ")";
-		System.out.println(sql);
-
+		
 		try {
 			pstmt = con.prepareStatement(sql);
 			rs = pstmt.executeQuery(sql);
 
 			if (rs.next()) {
 				ch_top2.select(rs.getString("name"));
+				topcategory_id = rs.getInt("topcategory_id");
 			}
 
 		} catch (SQLException e) {
@@ -643,6 +644,7 @@ public class ShoppingApp extends JFrame {
 				}
 			}
 		}
+		return topcategory_id;
 	}
 
 	public void setSubCategory(int row) {
