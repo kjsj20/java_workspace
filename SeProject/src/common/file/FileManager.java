@@ -12,10 +12,14 @@ public class FileManager {
 		return str[1];// 두번째 칸이 확장자임 
 	}
 	
-//	public static void main(String[] args) {
-//		String filename = getFilename("https://www.cartier.co.kr/content/dam/cartier_dam/Communication%20assets/HP/2020/10-oct-1/KR/MP1_hp_oct_1_ballon_bleu_KR.jpg.scale.480.380.high.jpg");
-//		System.out.println(filename);
-//		String ext = getExtend(filename);
-//		System.out.println(ext);
-//	}
+	public static String getExtend2(String filename) {
+		int lastIndex = filename.lastIndexOf(".");
+		//마지막점 다음 문자부터 가져와야 하므로 + 1을 더한다!!
+		
+		return filename.substring(lastIndex+1, filename.length());
+	}
+	
+	public static void main(String[] args) {
+		String filename = getFilename("https://www.cartier.co.kr/content/dam/cartier_dam/Communication%20assets/HP/2020/10-oct-1/KR/MP1_hp_oct_1_ballon_bleu_KR.jpg.scale.480.380.high.jpg");
+	}
 }
