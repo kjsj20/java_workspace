@@ -74,9 +74,9 @@ public class ShoppingApp extends JFrame {
 	JButton bt_edit; // 수정버튼
 	JButton bt_del; // 삭제버튼
 
-	String url = "jdbc:oracle:thin:@localhost:1521:ORCL";
+	String url = "jdbc:oracle:thin:@localhost:1521:XE";
 	String user = "user1104";
-	String password = "user1104";
+	String password = "1234";
 
 	Connection con;// 접속 성공이 되면, 그 정보를 가진 인터페이스
 	HashMap<String, Integer> map = new HashMap<String, Integer>(); // 컬렉션 프레임웍 중, key -value 의 쌍으로 객체를 관리해주는 객체
