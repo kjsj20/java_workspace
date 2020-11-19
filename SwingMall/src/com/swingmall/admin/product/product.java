@@ -64,14 +64,18 @@ public class product extends Page {
 		p_west.add(s1);
 		p_center.add(s2);
 		p_center.add(bt_regist);
-
+		
 		add(p_west, BorderLayout.WEST);
 		add(p_center);
 
 		tree.addTreeSelectionListener(new TreeSelectionListener() {
 			public void valueChanged(TreeSelectionEvent e) {
 				DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-				getProductList(selectedNode.toString());
+				if(selectedNode.toString().equals("상품목록")) {
+					getProductList(null);
+				} else {
+					getProductList(selectedNode.toString());					
+				}
 			}
 		});
 
