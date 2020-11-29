@@ -82,7 +82,7 @@ public class BoardDetailTest {
 		JButton prevBtn = new JButton("이전으로");
 		prevBtn.setForeground(Color.WHITE);
 		prevBtn.setFont(new Font("HY견고딕", Font.PLAIN, 12));
-		prevBtn.setBounds(395, 625, 86, 23);
+		prevBtn.setBounds(394, 481, 86, 23);
 		writePanel.add(prevBtn);
 		
 		JSeparator separator = new JSeparator();
@@ -101,20 +101,20 @@ public class BoardDetailTest {
 		detailContent.setForeground(Color.WHITE);
 		detailContent.setFont(new Font("HY견고딕", Font.PLAIN, 12));
 		detailContent.setBorder(new LineBorder(new Color(0, 0, 0)));
-		detailContent.setBounds(104, 93, 686, 511);
+		detailContent.setBounds(104, 93, 686, 354);
 		writePanel.add(detailContent);
 		
 		JButton detailDelBtn = new JButton("삭제하기");
 		detailDelBtn.setFocusable(false);
 		detailDelBtn.setForeground(Color.WHITE);
 		detailDelBtn.setFont(new Font("HY견고딕", Font.PLAIN, 12));
-		detailDelBtn.setBounds(267, 625, 86, 23);
+		detailDelBtn.setBounds(266, 481, 86, 23);
 		writePanel.add(detailDelBtn);
 		
 		JButton prevBtn_2 = new JButton("수정하기");
 		prevBtn_2.setForeground(Color.WHITE);
 		prevBtn_2.setFont(new Font("HY견고딕", Font.PLAIN, 12));
-		prevBtn_2.setBounds(524, 625, 86, 23);
+		prevBtn_2.setBounds(523, 481, 86, 23);
 		writePanel.add(prevBtn_2);
 		
 	}
